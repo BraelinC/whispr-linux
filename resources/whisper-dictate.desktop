@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Whisper Dictate
+Comment=Voice to text dictation
+Exec=whisper-dictate
+Icon=audio-input-microphone
+Type=Application
+Categories=Utility;Audio;
+StartupNotify=false

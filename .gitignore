@@ -1,0 +1,19 @@
+# Models (too large for git)
+models/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Temp
+*.log
+*.tmp
