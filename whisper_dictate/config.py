@@ -5,17 +5,11 @@ CONFIG_DIR = Path.home() / ".config" / "whisper-dictate"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 AVAILABLE_MODELS = {
-    # Moonshine models (sherpa-onnx) - very fast, good accuracy
-    "moonshine-tiny":   {"ram": "~210MB",  "speed": "fastest", "accuracy": "~87%", "engine": "sherpa"},
     "moonshine-base":   {"ram": "~430MB",  "speed": "very fast", "accuracy": "~92%", "engine": "sherpa"},
-    # Whisper models (faster-whisper)
-    "distil-small.en":  {"ram": "~300MB",  "speed": "fast",    "accuracy": "87%", "engine": "whisper"},
-    "distil-medium.en": {"ram": "~500MB",  "speed": "fast",    "accuracy": "88%", "engine": "whisper"},
-    "small.en":         {"ram": "~500MB",  "speed": "moderate", "accuracy": "92%", "engine": "whisper"},
 }
 
 DEFAULT_CONFIG = {
-    "model": "distil-medium.en",
+    "model": "moonshine-base",
     "compute_type": "int8",
     "hotkey": "f9",
     "auto_paste": True,
