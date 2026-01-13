@@ -436,19 +436,19 @@ class WhisperDictateApp:
         if self.config.get("auto_paste"):
             import time
 
-            # Use xclip for reliable clipboard (more reliable than Qt on X11)
+            # Also copy to clipboard as backup
             subprocess.run(
                 ["xclip", "-selection", "clipboard"],
                 input=text.encode(),
                 check=True
             )
 
-            # Small delay to let clipboard propagate
-            time.sleep(0.1)
+            # Small delay before typing
+            time.sleep(0.15)
 
-            paste_cmd = self.config.get("paste_command")
-            print(f"[DEBUG] Pasting with: xdotool key --clearmodifiers {paste_cmd}")
-            subprocess.run(["xdotool", "key", "--clearmodifiers", paste_cmd])
+            # Type out the text (works everywhere including web terminals)
+            print(f"[DEBUG] Typing out: {text[:50]}...")
+            subprocess.run(["xdotool", "type", "--clearmodifiers", "--", text])
 
         self.tray.showMessage("Transcribed", text[:100] + "..." if len(text) > 100 else text,
                              QSystemTrayIcon.MessageIcon.Information, 3000)
