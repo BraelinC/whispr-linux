@@ -447,11 +447,17 @@ class WhisperDictateApp:
 
             # Detect if focused window is a browser
             try:
+                # Get active window ID
+                win_id = subprocess.run(
+                    ["xdotool", "getactivewindow"],
+                    capture_output=True, text=True
+                ).stdout.strip()
+                # Get window class using xprop
                 result = subprocess.run(
-                    ["xdotool", "getactivewindow", "getwindowclassname"],
+                    ["xprop", "-id", win_id, "WM_CLASS"],
                     capture_output=True, text=True
                 )
-                window_class = result.stdout.strip().lower()
+                window_class = result.stdout.lower()
                 is_browser = any(b in window_class for b in [
                     "firefox", "chrome", "chromium", "zen", "helium", "brave", "opera", "vivaldi", "navigator"
                 ])
