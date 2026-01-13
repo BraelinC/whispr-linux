@@ -436,19 +436,38 @@ class WhisperDictateApp:
         if self.config.get("auto_paste"):
             import time
 
-            # Also copy to clipboard as backup
+            # Copy to clipboard
             subprocess.run(
                 ["xclip", "-selection", "clipboard"],
                 input=text.encode(),
                 check=True
             )
 
-            # Small delay before typing
-            time.sleep(0.15)
+            time.sleep(0.1)
 
-            # Type out the text (works everywhere including web terminals)
-            print(f"[DEBUG] Typing out: {text[:50]}...")
-            subprocess.run(["xdotool", "type", "--clearmodifiers", "--", text])
+            # Detect if focused window is a browser
+            try:
+                result = subprocess.run(
+                    ["xdotool", "getactivewindow", "getwindowclassname"],
+                    capture_output=True, text=True
+                )
+                window_class = result.stdout.strip().lower()
+                is_browser = any(b in window_class for b in [
+                    "firefox", "chrome", "chromium", "zen", "helium", "brave", "opera", "vivaldi", "navigator"
+                ])
+                print(f"[DEBUG] Window class: {window_class}, is_browser: {is_browser}")
+            except:
+                is_browser = False
+
+            if is_browser:
+                # Type out for web terminals (paste doesn't work reliably)
+                print(f"[DEBUG] Typing out for browser: {text[:50]}...")
+                subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", "5", "--", text])
+            else:
+                # Paste for native terminals (faster)
+                paste_cmd = self.config.get("paste_command")
+                print(f"[DEBUG] Pasting with: {paste_cmd}")
+                subprocess.run(["xdotool", "key", "--clearmodifiers", paste_cmd])
 
         self.tray.showMessage("Transcribed", text[:100] + "..." if len(text) > 100 else text,
                              QSystemTrayIcon.MessageIcon.Information, 3000)
